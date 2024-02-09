@@ -27,7 +27,25 @@ RSpec.describe 'Posts API', type: :request do
                 expect(post.content).to eq('Content of the post')
             end
         end
+    end
 
+    describe 'GET /posts' do
+        let!(:posts) {create_list(:post, 10) } #creating 10 posts using Factory Bot
+
+        before { get '/posts' }
+
+        it 'returns posts' do
+            expect(response).to have_http_status(200)
+            expect(json).not_to be_empty
+            expect(json.size).to eq(10)
+        end
+
+        it 'returns posts with the correct structure' do
+            #Assuming each post has 'title' and 'content'
+            json.each do |post|
+                expect(post).to include('title', 'content')
+            end
+        end
     end
 
     def json
