@@ -64,6 +64,43 @@ RSpec.describe 'Posts API', type: :request do
         end
     end
 
+    describe 'PUT /posts/:id' do
+        let!(:post) { create(:post) }
+
+        context 'when the request is valid' do
+            before { put "/posts/#{post.id}", params: { post: { title: 'My updated post', content: 'Updated content'} } }
+
+            it 'updates the post' do
+                expect(response).to have_http_status(200)
+                expect(json['title']).to eq('My updated post')
+                expect(json['content']).to eq('Updated content')
+            end
+        end
+
+        context 'when the request is invalid' do
+            before { put "/posts/#{post.id}", params: { post: { title: '', content: '' } } }
+
+            it 'returns status code 422' do
+                expect(response).to have_http_status(422)
+            end
+
+            it 'returns a validation failure message' do
+                expect(json['title']).to include("can't be blank")
+                expect(json['content']).to include("can't be blank")
+            end
+        end
+    end
+
+    describe 'DELETE /posts/:id' do
+        let!(:post) { create(:post) }
+
+        before { delete "/posts/#{post.id}" }
+
+        it 'returns status code 204' do
+            expect(response).to have_http_status(204)
+        end
+    end
+
     def json
         JSON.parse(response.body)
     end
