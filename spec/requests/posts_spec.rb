@@ -11,7 +11,7 @@ RSpec.describe 'Posts API', type: :request do
                 expect {
                     post '/posts', params: { post: valid_attributes }
                 }.to change(Post, :count).by(1)
-
+            end
             it 'returns status code 201' do
                 expect(response).to have_http_status(201)
             end
