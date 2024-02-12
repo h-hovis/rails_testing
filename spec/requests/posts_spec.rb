@@ -48,6 +48,22 @@ RSpec.describe 'Posts API', type: :request do
         end
     end
 
+    describe 'GET /posts/:id' do
+        let!(:post) { create(:post) }
+
+        before { get "/posts/#{post.id}" }
+
+        it 'returns the post' do    
+            expect(response).to have_http_status(200)
+            expect(json).not_to be_empty
+            expect(json['id']).to eq(post.id)
+        end
+
+        it 'should have the correct structure' do
+            expect(json).to include('title', 'content')
+        end
+    end
+
     def json
         JSON.parse(response.body)
     end
